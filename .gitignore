@@ -1,0 +1,27 @@
+# Build output
+/build/
+/target/
+/out/
+*.class
+
+# Gradle
+/.gradle/
+
+# IDE files
+/.idea/
+*.iml
+/.vscode/
+
+# Local tooling
+/.agents/
+/.codex/
+
+# Runtime and temporary files
+*.log
+*.tmp
+*.swp
+
+# Operating system files
+.DS_Store
+Thumbs.db
+desktop.ini

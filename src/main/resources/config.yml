@@ -1,0 +1,168 @@
+# Save interval and command delay.
+autosave-seconds: 300
+command-cooldown-millis: 1000
+
+koth-integration:
+  # Blank uses FactionsKore's native win count.
+  wins-placeholder: ""
+  wins-unavailable-text: "Unavailable"
+
+anti-farm:
+  # Delay before the same victim credits another event kill.
+  kill-credit-cooldown-seconds: 30
+
+kore-config-import:
+  # Import KOTH names and corners from FactionsKore.
+  enabled: true
+  plugin-folder: "FactionsKore"
+  # Optional path inside plugins/. Blank scans plugin-folder.
+  config-path: ""
+
+capture-tracking:
+  # Require KORE to report an active KOTH.
+  require-active-placeholder: true
+  active-placeholder: ""
+  active-koth-name-placeholder: "%kore_koth_currentkoth%"
+  # Resolves to the capturer name or a capturer-value.
+  capturer-placeholder: "%kore_koth_{koth}_capper%"
+  capturer-values:
+    - "true"
+    - "capturing"
+  # Infer only when one player is on the point.
+  infer-capturer-when-placeholder-unavailable: true
+  active-values:
+    - "true"
+    - "active"
+    - "running"
+
+  # Point corners and optional full-arena corners.
+  regions:
+    example:
+      enabled: false
+      corner-one: "50:75:50:world"
+      corner-two: "55:80:55:world"
+      area-corner-one: "0:50:0:world"
+      area-corner-two: "100:100:100:world"
+
+leaderboard-size: 10
+
+current-koth:
+  # Arena fallback when no area corners are set.
+  combat-radius: 100
+  gui:
+    # Menu layout. Rows must be 1-6; slots start at 0.
+    title: "&1KOTH &3| &b{koth}"
+    rows: 3
+    leaderboard-size: 5
+    entry-format: "{rank_color}#{position} &b{player} &3- &f{value}"
+    empty-format: "&3No stats recorded yet."
+    rank-colors:
+      - "&b"
+      - "&3"
+      - "&9"
+      - "&1"
+
+    filler:
+      enabled: true
+      material: "STAINED_GLASS_PANE"
+      data: 11
+      amount: 1
+      name: " "
+      lore: []
+
+    info:
+      slot: 13
+      material: "NETHER_STAR"
+      data: 0
+      amount: 1
+      name: "&b&l{koth}"
+      lore:
+        - "&3Live KOTH leaderboard"
+        - ""
+        - "&9Participants: &b{participants}"
+        - "&9Running for: &b{elapsed}"
+
+    # Set enabled: false to hide a stat item.
+    stats:
+      kills:
+        enabled: true
+        slot: 10
+        material: "DIAMOND_SWORD"
+        data: 0
+        amount: 1
+        name: "&b&lKills"
+        lore:
+          - "&3Top {leaderboard_size} this event"
+          - ""
+      deaths:
+        enabled: true
+        slot: 11
+        material: "SKULL_ITEM"
+        data: 0
+        amount: 1
+        name: "&b&lDeaths"
+        lore:
+          - "&3Top {leaderboard_size} this event"
+          - ""
+      kd-ratio:
+        enabled: true
+        slot: 12
+        material: "GOLDEN_APPLE"
+        data: 0
+        amount: 1
+        name: "&b&lK/D Ratio"
+        lore:
+          - "&3Top {leaderboard_size} this event"
+          - ""
+      damage-dealt:
+        enabled: true
+        slot: 14
+        material: "BLAZE_POWDER"
+        data: 0
+        amount: 1
+        name: "&b&lDamage Dealt"
+        lore:
+          - "&3Top {leaderboard_size} this event"
+          - ""
+      damage-received:
+        enabled: true
+        slot: 15
+        material: "IRON_CHESTPLATE"
+        data: 0
+        amount: 1
+        name: "&b&lDamage Received"
+        lore:
+          - "&3Top {leaderboard_size} this event"
+          - ""
+      capture-time:
+        enabled: true
+        slot: 16
+        material: "WATCH"
+        data: 0
+        amount: 1
+        name: "&b&lCapture Time"
+        lore:
+          - "&3Top {leaderboard_size} this event"
+          - ""
+
+messages:
+  prefix: "&1[&bKOTH&1] &3"
+  no-permission: "&9You do not have permission."
+  player-not-found: "&9No statistics were found for that player."
+  reloaded: "&bConfiguration reloaded."
+  reset: "&bReset statistics for &f{player}&b."
+  reset-all: "&bReset KothStats data for &f{count} &bplayers."
+  invalid-stat: "&9Use one of: kills, deaths, damage-dealt, damage-received, capture-time."
+  no-active-koth: "&9There is no active KOTH right now."
+  command-cooldown: "&9Please wait before using that command again."
+  stats:
+    - "&1&m----------------------------------------"
+    - "&b&lKOTH STATS &3| &f{player}"
+    - "&3Wins &1| &f{koth_wins}"
+    - "&3Kills &1| &f{kills}    &3Deaths &1| &f{deaths}"
+    - "&3Damage dealt &1| &f{damage_dealt}"
+    - "&3Damage received &1| &f{damage_received}"
+    - "&3Capture time &1| &f{capture_time}"
+    - "&1&m----------------------------------------"
+  top-header: "&b&lTOP &f{stat}"
+  top-entry: "&b#{position} &f{player} &1- &3{value}"

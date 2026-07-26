@@ -1,0 +1,36 @@
+name: KothStats
+version: 1.5.1
+main: com.lucasdunn.kothstats.KothStatsPlugin
+author: LucasDunn
+description: Tracks combat and FactionsKore KOTH capture statistics.
+softdepend: [FactionsKore, PlaceholderAPI]
+commands:
+  kothstats:
+    description: View KOTH and combat statistics.
+    usage: /<command> help
+    aliases: [kstats]
+permissions:
+  kothstats.view:
+    description: View your own statistics.
+    default: true
+  kothstats.view.others:
+    description: View another player's statistics.
+    default: true
+  kothstats.top:
+    description: View statistics leaderboards.
+    default: true
+  kothstats.current:
+    description: Open the current KOTH session leaderboard.
+    default: true
+  kothstats.admin.reload:
+    description: Reload KothStats.
+    default: op
+  kothstats.admin.reset:
+    description: Reset a player's statistics.
+    default: op
+  kothstats.admin.resetall:
+    description: Reset all KothStats player statistics.
+    default: op
+  kothstats.cooldown.bypass:
+    description: Bypass the KothStats command rate limit.
+    default: op
