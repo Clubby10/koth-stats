@@ -6,6 +6,10 @@ koth-integration:
   # Blank uses FactionsKore's native win count.
   wins-placeholder: ""
   wins-unavailable-text: "Unavailable"
+  # Cache win lookups to protect against frequently refreshed placeholders.
+  # Set seconds to 0 to disable. Oldest entries are evicted at the size limit.
+  wins-cache-seconds: 5
+  wins-cache-size: 256
 
 anti-farm:
   # Delay before the same victim credits another event kill.

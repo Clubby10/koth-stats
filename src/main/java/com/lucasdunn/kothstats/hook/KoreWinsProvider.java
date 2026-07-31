@@ -12,7 +12,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,6 +31,8 @@ public final class KoreWinsProvider {
     };
 
     private final KothStatsPlugin plugin;
+    private final Map<String, CachedWins> cache =
+        new LinkedHashMap<String, CachedWins>(16, 0.75F, true);
     private boolean warned;
     private boolean queryingNativeCommand;
 
@@ -35,13 +41,21 @@ public final class KoreWinsProvider {
     }
 
     public String getWins(Player viewer, String targetName) {
+        String cacheKey = targetName.toLowerCase(Locale.ROOT);
+        String cached = getCached(cacheKey);
+        if (cached != null) {
+            return cached;
+        }
+
         Player target = Bukkit.getPlayerExact(targetName);
         String placeholderValue = target == null ? null : fromPlaceholders(target);
         if (placeholderValue != null) {
+            cache(cacheKey, placeholderValue);
             return placeholderValue;
         }
         String commandValue = fromNativeCommand(viewer, targetName);
         if (commandValue != null) {
+            cache(cacheKey, commandValue);
             return commandValue;
         }
         if (!warned) {
@@ -49,8 +63,41 @@ public final class KoreWinsProvider {
             plugin.getLogger().warning("Could not read FactionsKore KOTH wins. "
                 + "Set koth-integration.wins-placeholder to a working numeric placeholder.");
         }
-        return plugin.getConfig().getString(
+        String unavailable = plugin.getConfig().getString(
             "koth-integration.wins-unavailable-text", "Unavailable");
+        cache(cacheKey, unavailable);
+        return unavailable;
+    }
+
+    private synchronized String getCached(String cacheKey) {
+        CachedWins cached = cache.get(cacheKey);
+        if (cached == null) {
+            return null;
+        }
+        if (cached.expiresAtMillis <= System.currentTimeMillis()) {
+            cache.remove(cacheKey);
+            return null;
+        }
+        return cached.value;
+    }
+
+    private synchronized void cache(String cacheKey, String value) {
+        long cacheSeconds = plugin.getConfig().getLong(
+            "koth-integration.wins-cache-seconds", 5L);
+        if (cacheSeconds <= 0L) {
+            return;
+        }
+        long expiresAtMillis = System.currentTimeMillis()
+            + Math.min(cacheSeconds, 86400L) * 1000L;
+        cache.put(cacheKey, new CachedWins(value, expiresAtMillis));
+
+        int maximumSize = Math.max(1, plugin.getConfig().getInt(
+            "koth-integration.wins-cache-size", 256));
+        Iterator<String> keys = cache.keySet().iterator();
+        while (cache.size() > maximumSize && keys.hasNext()) {
+            keys.next();
+            keys.remove();
+        }
     }
 
     private String fromPlaceholders(Player target) {
@@ -130,6 +177,16 @@ public final class KoreWinsProvider {
             result = matcher.group().replace(",", "");
         }
         return result;
+    }
+
+    private static final class CachedWins {
+        private final String value;
+        private final long expiresAtMillis;
+
+        private CachedWins(String value, long expiresAtMillis) {
+            this.value = value;
+            this.expiresAtMillis = expiresAtMillis;
+        }
     }
 
     private static final class SilentPlayerHandler implements InvocationHandler {
