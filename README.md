@@ -78,7 +78,18 @@ The plugin will be created at `build/libs/KothStats-1.5.3.jar`.
 
 ## Pictures
 
-![Live Leaderboard](pictures/live-leaderboard.png)
-![Player Statistics](pictures/player-statistics.png)
-![Top Leaderboard](pictures/top-leaderboard.png)
-![Configuration](pictures/configuration.png)
+### Player Statistics
+
+![Player statistics shown by the KothStats command](pictures/kothstats.png)
+
+### Live KOTH Leaderboard
+
+![Current KOTH leaderboard](pictures/current.png)
+
+### All-Time Leaderboard
+
+![All-time KOTH statistics leaderboard](pictures/leaderboard.png)
+
+### Command Help
+
+![KothStats command help](pictures/help.png)
