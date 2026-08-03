@@ -151,6 +151,22 @@ current-koth:
 
 messages:
   prefix: "&1[&bKOTH&1] &3"
+  # Help lines are shown in order. Add a permission to hide a line from
+  # players who do not have it.
+  help:
+    - "&8&m----------------------------------------"
+    - "&6&lKOTH STATS &8| &7Commands"
+    - "&e/koth stats [player] &8- &7View player stats"
+    - "&e/koth stats current &8- &7View the live leaderboard"
+    - "&e/koth stats top <stat> &8- &7View all-time leaders"
+    - text: "&c/koth stats reset <player> &8- &7Reset one player"
+      permission: "kothstats.admin.reset"
+    - text: "&c/koth stats reset all confirm &8- &7Reset all stats"
+      permission: "kothstats.admin.resetall"
+    - text: "&c/koth stats reload &8- &7Reload configuration"
+      permission: "kothstats.admin.reload"
+    - "&8Aliases: &7/kothstats, /kstats"
+    - "&8&m----------------------------------------"
   no-permission: "&9You do not have permission."
   player-not-found: "&9No statistics were found for that player."
   reloaded: "&bConfiguration reloaded."

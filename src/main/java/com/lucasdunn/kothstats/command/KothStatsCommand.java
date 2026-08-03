@@ -94,22 +94,22 @@ public final class KothStatsCommand implements CommandExecutor, TabCompleter {
     }
 
     private boolean help(CommandSender sender) {
-        send(sender, "&8&m----------------------------------------");
-        send(sender, "&6&lKOTH STATS &8| &7Commands");
-        send(sender, "&e/koth stats [player] &8- &7View player stats");
-        send(sender, "&e/koth stats current &8- &7View the live leaderboard");
-        send(sender, "&e/koth stats top <stat> &8- &7View all-time leaders");
-        if (sender.hasPermission("kothstats.admin.reset")) {
-            send(sender, "&c/koth stats reset <player> &8- &7Reset one player");
+        for (Object entry : plugin.getConfig().getList("messages.help")) {
+            if (entry instanceof String) {
+                send(sender, (String) entry);
+                continue;
+            }
+            if (!(entry instanceof Map)) {
+                continue;
+            }
+            Map<?, ?> configuredLine = (Map<?, ?>) entry;
+            Object text = configuredLine.get("text");
+            Object permission = configuredLine.get("permission");
+            if (text != null && (permission == null
+                || sender.hasPermission(String.valueOf(permission)))) {
+                send(sender, String.valueOf(text));
+            }
         }
-        if (sender.hasPermission("kothstats.admin.resetall")) {
-            send(sender, "&c/koth stats reset all confirm &8- &7Reset all stats");
-        }
-        if (sender.hasPermission("kothstats.admin.reload")) {
-            send(sender, "&c/koth stats reload &8- &7Reload configuration");
-        }
-        send(sender, "&8Aliases: &7/kothstats, /kstats");
-        send(sender, "&8&m----------------------------------------");
         return true;
     }
 
