@@ -44,6 +44,15 @@ default nodes are:
 
 Player permissions are enabled by default. Administrative permissions default to server operators.
 
+To change a permission node, replace its value under `permissions` and run
+`/koth stats reload`. For example:
+
+```yaml
+permissions:
+  view: "myserver.kothstats.view"
+  reset: "myserver.kothstats.admin.reset"
+```
+
 ## Configuration
 
 The live GUI can be customized from `current-koth.gui` in `config.yml`.
