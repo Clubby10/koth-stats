@@ -1,5 +1,5 @@
 name: KothStats
-version: 1.5.3
+version: 1.5.4
 main: com.lucasdunn.kothstats.KothStatsPlugin
 author: LucasDunn
 description: Tracks combat and FactionsKore KOTH capture statistics.
