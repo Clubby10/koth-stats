@@ -7,7 +7,7 @@ Spigot plugin for tracking player combat, captures, and live leaderboards during
 1. Install Java 8+ and a Spigot 1.8.8/1.8.9 server.
 2. Install FactionsKore.
 3. Install PlaceholderAPI for automatic KOTH and capturer detection.
-4. Put `KothStats-1.5.3.jar` in the server's `plugins` folder.
+4. Put `KothStats-1.5.4.jar` in the server's `plugins` folder.
 5. Start the server to generate the configuration.
 6. Edit `plugins/KothStats/config.yml`.
 7. Run `/koth stats reload`.
@@ -77,7 +77,7 @@ Run:
 .\gradlew.bat build
 ```
 
-The plugin will be created at `build/libs/KothStats-1.5.3.jar`.
+The plugin will be created at `build/libs/KothStats-1.5.4.jar`.
 
 ## Pictures
 
