@@ -30,6 +30,9 @@ Available leaderboard statistics are `kills`, `deaths`, `damage-dealt`, `damage-
 
 ## Permissions
 
+Every permission node can be changed under `permissions` in `config.yml`. The
+default nodes are:
+
 - `kothstats.view` - view personal statistics
 - `kothstats.view.others` - view another player's statistics
 - `kothstats.top` - view all-time leaderboards

@@ -63,7 +63,7 @@ public final class KothStatsCommand implements CommandExecutor, TabCompleter {
             return show(sender, statsArgs);
         }
         if (args.length > 0 && "reload".equalsIgnoreCase(args[0])) {
-            if (!has(sender, "kothstats.admin.reload")) {
+            if (!has(sender, "reload", "kothstats.admin.reload")) {
                 return true;
             }
             plugin.reloadPlugin();
@@ -105,8 +105,11 @@ public final class KothStatsCommand implements CommandExecutor, TabCompleter {
             Map<?, ?> configuredLine = (Map<?, ?>) entry;
             Object text = configuredLine.get("text");
             Object permission = configuredLine.get("permission");
-            if (text != null && (permission == null
-                || sender.hasPermission(String.valueOf(permission)))) {
+            Object permissionKey = configuredLine.get("permission-key");
+            boolean allowed = permissionKey != null
+                ? sender.hasPermission(permission(String.valueOf(permissionKey), ""))
+                : permission == null || sender.hasPermission(String.valueOf(permission));
+            if (text != null && allowed) {
                 send(sender, String.valueOf(text));
             }
         }
@@ -114,7 +117,7 @@ public final class KothStatsCommand implements CommandExecutor, TabCompleter {
     }
 
     private boolean current(CommandSender sender, String[] args) {
-        if (!has(sender, "kothstats.current")) {
+        if (!has(sender, "current", "kothstats.current")) {
             return true;
         }
         if (!(sender instanceof Player)) {
@@ -136,7 +139,7 @@ public final class KothStatsCommand implements CommandExecutor, TabCompleter {
     }
 
     private boolean show(CommandSender sender, String[] args) {
-        if (!has(sender, "kothstats.view")) {
+        if (!has(sender, "view", "kothstats.view")) {
             return true;
         }
         PlayerStats stats;
@@ -147,7 +150,7 @@ public final class KothStatsCommand implements CommandExecutor, TabCompleter {
             }
             stats = repository.getOrCreate((Player) sender);
         } else {
-            if (!has(sender, "kothstats.view.others")) {
+            if (!has(sender, "view-others", "kothstats.view.others")) {
                 return true;
             }
             stats = find(args[0]);
@@ -173,7 +176,7 @@ public final class KothStatsCommand implements CommandExecutor, TabCompleter {
 
     private boolean reset(CommandSender sender, String[] args) {
         if (args.length < 2) {
-            if (!has(sender, "kothstats.admin.reset")) {
+            if (!has(sender, "reset", "kothstats.admin.reset")) {
                 return true;
             }
             send(sender, "&cUsage: /koth stats reset <player>");
@@ -182,7 +185,7 @@ public final class KothStatsCommand implements CommandExecutor, TabCompleter {
         if ("all".equalsIgnoreCase(args[1]) || "*".equals(args[1])) {
             return resetAll(sender, args, 2);
         }
-        if (!has(sender, "kothstats.admin.reset")) {
+        if (!has(sender, "reset", "kothstats.admin.reset")) {
             return true;
         }
         PlayerStats stats = find(args[1]);
@@ -197,7 +200,7 @@ public final class KothStatsCommand implements CommandExecutor, TabCompleter {
     }
 
     private boolean resetAll(CommandSender sender, String[] args, int confirmationIndex) {
-        if (!has(sender, "kothstats.admin.resetall")) {
+        if (!has(sender, "reset-all", "kothstats.admin.resetall")) {
             return true;
         }
         if (args.length <= confirmationIndex
@@ -215,7 +218,7 @@ public final class KothStatsCommand implements CommandExecutor, TabCompleter {
     }
 
     private boolean top(CommandSender sender, String[] args) {
-        if (!has(sender, "kothstats.top")) {
+        if (!has(sender, "top", "kothstats.top")) {
             return true;
         }
         if (args.length < 2 || !isStat(args[1].toLowerCase())) {
@@ -254,13 +257,13 @@ public final class KothStatsCommand implements CommandExecutor, TabCompleter {
                                       String alias, String[] args) {
         List<String> options = new ArrayList<String>();
         if (args.length == 1) {
-            addIfAllowed(options, sender, "help", null);
-            addIfAllowed(options, sender, "stats", "kothstats.view");
-            addIfAllowed(options, sender, "current", "kothstats.current");
-            addIfAllowed(options, sender, "top", "kothstats.top");
-            addIfAllowed(options, sender, "reset", "kothstats.admin.reset");
-            addIfAllowed(options, sender, "resetall", "kothstats.admin.resetall");
-            addIfAllowed(options, sender, "reload", "kothstats.admin.reload");
+            addIfAllowed(options, sender, "help", null, null);
+            addIfAllowed(options, sender, "stats", "view", "kothstats.view");
+            addIfAllowed(options, sender, "current", "current", "kothstats.current");
+            addIfAllowed(options, sender, "top", "top", "kothstats.top");
+            addIfAllowed(options, sender, "reset", "reset", "kothstats.admin.reset");
+            addIfAllowed(options, sender, "resetall", "reset-all", "kothstats.admin.resetall");
+            addIfAllowed(options, sender, "reload", "reload", "kothstats.admin.reload");
             for (Player online : Bukkit.getOnlinePlayers()) {
                 options.add(online.getName());
             }
@@ -301,8 +304,9 @@ public final class KothStatsCommand implements CommandExecutor, TabCompleter {
     }
 
     private void addIfAllowed(List<String> options, CommandSender sender,
-                              String option, String permission) {
-        if (permission == null || sender.hasPermission(permission)) {
+                              String option, String permissionKey, String defaultPermission) {
+        if (permissionKey == null
+            || sender.hasPermission(permission(permissionKey, defaultPermission))) {
             options.add(option);
         }
     }
@@ -321,7 +325,8 @@ public final class KothStatsCommand implements CommandExecutor, TabCompleter {
 
     private boolean isRateLimited(CommandSender sender) {
         if (!(sender instanceof Player)
-            || sender.hasPermission("kothstats.cooldown.bypass")) {
+            || sender.hasPermission(permission("cooldown-bypass",
+                "kothstats.cooldown.bypass"))) {
             return false;
         }
         Player player = (Player) sender;
@@ -332,12 +337,22 @@ public final class KothStatsCommand implements CommandExecutor, TabCompleter {
         return previous != null && now - previous < delay;
     }
 
-    private boolean has(CommandSender sender, String permission) {
-        if (sender.hasPermission(permission)) {
+    private boolean has(CommandSender sender, String permissionKey,
+                        String defaultPermission) {
+        if (sender.hasPermission(permission(permissionKey, defaultPermission))) {
             return true;
         }
         notice(sender, "no-permission");
         return false;
+    }
+
+    private String permission(String key, String defaultPermission) {
+        String configured = plugin.getConfig().getString("permissions." + key,
+            defaultPermission);
+        if (configured == null || configured.trim().isEmpty()) {
+            return defaultPermission;
+        }
+        return configured.trim();
     }
 
     private boolean isStat(String stat) {

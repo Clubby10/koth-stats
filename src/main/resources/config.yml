@@ -2,6 +2,17 @@
 autosave-seconds: 300
 command-cooldown-millis: 1000
 
+# Permission nodes may be changed to match your permissions setup.
+permissions:
+  view: "kothstats.view"
+  view-others: "kothstats.view.others"
+  top: "kothstats.top"
+  current: "kothstats.current"
+  reload: "kothstats.admin.reload"
+  reset: "kothstats.admin.reset"
+  reset-all: "kothstats.admin.resetall"
+  cooldown-bypass: "kothstats.cooldown.bypass"
+
 koth-integration:
   # Blank uses FactionsKore's native win count.
   wins-placeholder: ""
@@ -160,11 +171,11 @@ messages:
     - "&e/koth stats current &8- &7View the live leaderboard"
     - "&e/koth stats top <stat> &8- &7View all-time leaders"
     - text: "&c/koth stats reset <player> &8- &7Reset one player"
-      permission: "kothstats.admin.reset"
+      permission-key: "reset"
     - text: "&c/koth stats reset all confirm &8- &7Reset all stats"
-      permission: "kothstats.admin.resetall"
+      permission-key: "reset-all"
     - text: "&c/koth stats reload &8- &7Reload configuration"
-      permission: "kothstats.admin.reload"
+      permission-key: "reload"
     - "&8Aliases: &7/kothstats, /kstats"
     - "&8&m----------------------------------------"
   no-permission: "&9You do not have permission."
